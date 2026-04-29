@@ -936,6 +936,31 @@ unlock_and_return:
 	return ret;
 }
 
+static int ar0234_get_selection(struct v4l2_subdev *sd,
+				struct v4l2_subdev_state *sd_state,
+				struct v4l2_subdev_selection *sel)
+{
+	struct ar0234 *ar0234 = to_ar0234(sd);
+
+	if (sel->which != V4L2_SUBDEV_FORMAT_ACTIVE)
+		return -EINVAL;
+
+	switch (sel->target) {
+	case V4L2_SEL_TGT_CROP_BOUNDS:
+	case V4L2_SEL_TGT_CROP_DEFAULT:
+		sel->r.left = AR0234_PIXEL_ARRAY_LEFT;
+		sel->r.top = AR0234_PIXEL_ARRAY_TOP;
+		sel->r.width = AR0234_PIXEL_ARRAY_WIDTH;
+		sel->r.height = AR0234_PIXEL_ARRAY_HEIGHT;
+		return 0;
+	case V4L2_SEL_TGT_CROP:
+		sel->r = ar0234->crop_rect;
+		return 0;
+	default:
+		return -EINVAL;
+	}
+}
+
 /* ------------------------------------------------------------------
  * V4L2 Controls
  * ------------------------------------------------------------------ */
@@ -1185,6 +1210,7 @@ static const struct v4l2_subdev_pad_ops ar0234_pad_ops = {
 	.get_fmt = ar0234_get_fmt,
 	.set_fmt = ar0234_set_fmt,
 	.get_mbus_config = ar0234_g_mbus_config,
+	.get_selection = ar0234_get_selection,
 };
 
 static const struct v4l2_subdev_ops ar0234_subdev_ops = {
