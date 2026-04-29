@@ -1,10 +1,7 @@
-
 config VIDEO_AR0230
 	tristate "Aptina AR0230 sensor support"
-	depends on I2C && VIDEO_DEV
+	depends on I2C && VIDEO_V4L2 && VIDEO_V4L2_SUBDEV_API
 	depends on MEDIA_CAMERA_SUPPORT
-	select MEDIA_CONTROLLER
-	select VIDEO_V4L2_SUBDEV_API
 	select V4L2_FWNODE
 	help
 	  Support for the Aptina AR0230 sensor.
